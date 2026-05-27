@@ -150,7 +150,7 @@ describe("locateAll", () => {
     expect(located).toHaveLength(1)
     expect(located[0].edit.find).toBe("cat")
     expect(failed).toHaveLength(2)
-    expect(failed.map((f) => f.edit.find).sort()).toEqual(["missing", "the"])
+    expect(failed.map((f) => f.edit.find).toSorted()).toEqual(["missing", "the"])
   })
 
   test("empty input → empty partitions", () => {

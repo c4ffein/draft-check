@@ -46,7 +46,7 @@ export const PRESETS: Preset[] = [
     id: "commit",
     label: "Git commit message",
     description: "Imperative mood, ~50 char subject, why over what.",
-    systemPrompt: `${BASE}\n\nContext: this is a git commit message. Subject line should be imperative mood (\"add X\", not \"added X\"), ~50 chars. Body explains WHY not WHAT. No trailing period in subject.`,
+    systemPrompt: `${BASE}\n\nContext: this is a git commit message. Subject line should be imperative mood ("add X", not "added X"), ~50 chars. Body explains WHY not WHAT. No trailing period in subject.`,
   },
   {
     id: "plain",
