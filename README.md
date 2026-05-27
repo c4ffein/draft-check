@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# text-coach
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+KISS writing assistant in the browser. Drop in your Anthropic API key, paste a draft, get surgical edit suggestions you can apply or dismiss one click at a time.
 
-Currently, two official plugins are available:
+Vibe coded by Claude, nudged toward the right debugging path by an actual human.
+No backend, no telemetry — the page talks straight to `api.anthropic.com` from your browser. Your key lives in `localStorage`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Get an Anthropic API key at https://console.anthropic.com/ and paste it into the "Set API key" panel the first time you open the app.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun run dev      # vite on :8080, bound to all interfaces
+bun run build    # tsc + vite build → dist/
+bun run preview  # serve the build on :8080
+bun run lint
 ```
+
+Pick a style preset (Discord, email, commit message, tweet, formal doc, plain), type in the textarea, pause for ~1.5s, and suggestions appear on the right. **Apply** rewrites the text and re-anchors the rest; **Dismiss** drops one; edits during a pending request abort it and re-query.
+
+## How it works
+
+```
+You type  ──debounce 1.5s──▶  Claude (Haiku, tool_use: propose_edits)
+                                        │
+                                        ▼
+                              [(start, end, replacement, rationale, category), ...]
+                                        │
+                                        ▼
+Apply  ──▶  splice text, shift offsets of later edits, mark overlapping ones superseded
+Reject ──▶  mark as rejected
+Edit   ──▶  mark pending suggestions stale, re-query
+```
+
+Edits are character offsets in the *original* text the model saw. The client tracks state per suggestion (`pending` / `applied` / `rejected` / `superseded` / `stale`) so history stays coherent across rapid edits.
+
+## Nginx (reverse proxy)
+
+```nginx
+location / {
+    proxy_pass http://text-coach:8080;
+    proxy_set_header Host $host;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;  # map $http_upgrade above
+}
+```
+
+If you're fronting the Vite dev server through TLS, set `server.hmr` in `vite.config.ts` to the public hostname + `clientPort: 443` so HMR's websocket survives the proxy.
+
+## Stack
+
+React 19 · TypeScript · Vite 8 · Tailwind 4 · Bun · Anthropic Messages API (tool use)
