@@ -1,4 +1,4 @@
-# text-coach
+# draft-check
 
 KISS writing assistant in the browser. Drop in your Anthropic API key, paste a draft, get surgical edit suggestions you can apply or dismiss one click at a time.
 
@@ -27,7 +27,7 @@ Pick a style preset (Discord, email, commit message, tweet, formal doc, plain), 
 ## How it works
 
 ```
-You type  ──debounce 1.5s──▶  Claude (Haiku, tool_use: propose_edits)
+You type  ──debounce 1.5s──▶  Claude (Opus 4.8, tool_use: propose_edits)
                                         │
                                         ▼
                               [(start, end, replacement, rationale, category), ...]
@@ -44,7 +44,7 @@ Edits are character offsets in the *original* text the model saw. The client tra
 
 ```nginx
 location / {
-    proxy_pass http://text-coach:8080;
+    proxy_pass http://draft-check:8080;
     proxy_set_header Host $host;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -56,4 +56,4 @@ If you're fronting the Vite dev server through TLS, set `server.hmr` in `vite.co
 
 ## Stack
 
-React 19 · TypeScript · Vite 8 · Tailwind 4 · Bun · Anthropic Messages API (tool use)
+React 19 · TypeScript · Tailwind 4 · Bun · Anthropic Messages API (tool use)
