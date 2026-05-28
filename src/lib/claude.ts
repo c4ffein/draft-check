@@ -2,7 +2,7 @@ import { type LineEdit, type LocateOk, locateAll, numberLines } from "./locate"
 import type { Suggestion } from "./types"
 
 const API_URL = "https://api.anthropic.com/v1/messages"
-const MODEL = "claude-opus-4-7"
+const MODEL = "claude-opus-4-8"
 const MAX_RETRIES = 2
 
 const TOOL = {
