@@ -5,7 +5,7 @@ type Props = {
   onChange: (key: string) => void
 }
 
-const STORAGE_KEY = "text-coach.apiKey"
+const STORAGE_KEY = "draft-check.apiKey"
 
 export function loadApiKey(): string {
   return localStorage.getItem(STORAGE_KEY) ?? ""
