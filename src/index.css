@@ -8,6 +8,11 @@ html, body, #root {
   height: 100%;
 }
 
+/* iOS ignores viewport maximum-scale for manual pinch zoom; disable it here. */
+* {
+  touch-action: pan-x pan-y;
+}
+
 body {
   margin: 0;
   background: #0b0d10;
