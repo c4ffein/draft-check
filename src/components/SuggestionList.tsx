@@ -5,7 +5,6 @@ type Props = {
   suggestions: Suggestion[]
   onApply: (s: Suggestion) => void
   onReject: (id: string) => void
-  onHover: (id: string | null) => void
   loading: boolean
   error: string | null
 }
@@ -25,7 +24,7 @@ function snippet(text: string, s: Suggestion): string {
   return `"${original}" → "${s.replacement}"`
 }
 
-export function SuggestionList({ text, suggestions, onApply, onReject, onHover, loading, error }: Props) {
+export function SuggestionList({ text, suggestions, onApply, onReject, loading, error }: Props) {
   const pending = suggestions.filter((s) => s.state === "pending")
   const otherStates = suggestions.filter((s) => s.state !== "pending" && s.state !== "obsolete")
 
@@ -52,8 +51,6 @@ export function SuggestionList({ text, suggestions, onApply, onReject, onHover, 
         {pending.map((s) => (
           <li
             key={s.id}
-            onMouseEnter={() => onHover(s.id)}
-            onMouseLeave={() => onHover(null)}
             className="rounded border border-zinc-700 bg-zinc-900/70 p-2"
           >
             <div className="flex items-start justify-between gap-2">

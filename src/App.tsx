@@ -18,7 +18,6 @@ function App() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [, setHoveredId] = useState<string | null>(null)
 
   // History: `past` holds milestones we can undo TO (not including current),
   // `future` holds milestones we can redo TO. lastMilestoneRef tracks the most
@@ -139,7 +138,7 @@ function App() {
     <div className="mx-auto flex h-full max-w-6xl flex-col gap-4 p-6">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-medium">
-          <span className="text-violet-400">text</span>-coach
+          <span className="text-violet-400">draft</span>-check
         </h1>
         <div className="flex items-center gap-2">
           <button
@@ -198,7 +197,6 @@ function App() {
             suggestions={suggestions}
             onApply={onApply}
             onReject={onReject}
-            onHover={setHoveredId}
             loading={loading}
             error={error}
           />
